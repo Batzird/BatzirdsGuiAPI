@@ -1,6 +1,5 @@
 package com.batzirdbuilds.batzirdsGuiAPI.gui;
 
-import com.batzirdbuilds.batzirdsGuiAPI.BatzirdsGuiAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -135,37 +134,6 @@ public final class GuiBuilder {
         return this;
     }
 
-
-    public GuiBuilder fillRow(int row, GuiItem item) {
-        Objects.requireNonNull(item, "item");
-        if (row < 0 || row >= rows) {
-            throw new IllegalArgumentException("row must be between 0 and " + (rows - 1));
-        }
-
-        for (int column = 0; column < columns; column++) {
-            int rawSlot = toRawSlot(toVirtualSlot(row, column));
-            if (!slotItems.containsKey(rawSlot)) {
-                slotItems.put(rawSlot, item);
-            }
-        }
-        return this;
-    }
-
-    public GuiBuilder fillColumn(int column, GuiItem item) {
-        Objects.requireNonNull(item, "item");
-        if (column < 0 || column >= columns) {
-            throw new IllegalArgumentException("column must be between 0 and " + (columns - 1));
-        }
-
-        for (int row = 0; row < rows; row++) {
-            int rawSlot = toRawSlot(toVirtualSlot(row, column));
-            if (!slotItems.containsKey(rawSlot)) {
-                slotItems.put(rawSlot, item);
-            }
-        }
-        return this;
-    }
-
     public GuiDefinition build() {
         return new GuiDefinition(id, title, rows, columns, slotItems, options);
     }
@@ -173,15 +141,10 @@ public final class GuiBuilder {
     public Inventory open(Player player) {
         Objects.requireNonNull(player, "player");
         Inventory inventory = Bukkit.createInventory(null, rows * 9, title);
-        slotItems.forEach(inventory::setItem);
+        HashMap<Integer, ItemStack> slotItemStacks = new HashMap<>();
+        slotItems.forEach((slot, item) -> slotItemStacks.put(slot,item.itemStack()));
+        slotItemStacks.forEach(inventory::setItem);
         player.openInventory(inventory);
-
-        // Track callback actions so runtime listener can resolve and execute them.
-        BatzirdsGuiAPI api = BatzirdsGuiAPI.getGuiApi();
-        if (api != null && api.getSessionManager() != null) {
-            api.getSessionManager().trackSession(player, inventory, slotActions, options.cancelAllClicks());
-        }
-
         return inventory;
     }
 
