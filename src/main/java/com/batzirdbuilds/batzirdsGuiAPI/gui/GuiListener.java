@@ -59,6 +59,12 @@ public final class GuiListener implements Listener {
         // Protected path #4: by default, cancel direct clicks on GUI top inventory unless slot is explicitly whitelisted.
         if (clickedTopInventory && options.strictTopInventoryProtection() && !whitelistedInteractiveSlot) {
             event.setCancelled(true);
+            return;
+        }
+
+        // Protected path #5: optionally block clicks in the player inventory while a GUI is open.
+        if (!clickedTopInventory && !options.allowPlayerInventoryClicks()) {
+            event.setCancelled(true);
         }
     }
 
@@ -71,7 +77,7 @@ public final class GuiListener implements Listener {
 
         final int topSize = view.getTopInventory().getSize();
 
-        // Protected path #5: block drag operations that touch any non-whitelisted GUI slot.
+        // Protected path #6: block drag operations that touch any non-whitelisted GUI slot.
         for (final int rawSlot : event.getRawSlots()) {
             if (rawSlot < topSize && !options.isInteractiveSlot(rawSlot)) {
                 event.setCancelled(true);
