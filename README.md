@@ -5,7 +5,7 @@ A lightweight Paper API for building inventory GUIs quickly with:
 - fluent GUI construction
 - click handlers per slot
 - click-protection policies to prevent item theft
-- cosmetic layout helpers (borders/patterns/templates)
+- cosmetic layout helpers (borders/patterns/templates, corners, diagonals)
 - optional logical column addressing for compact menu authoring
 
 > Target platform: **Paper 1.21.11**
@@ -224,7 +224,7 @@ builder.open(player);
 
 ## Example 4: Cosmetic utilities
 
-For decorative menus, use the cosmetic package helpers.
+For decorative menus, use the cosmetic package helpers. You can now also apply `corners(...)` and `diagonal(...)` directly.
 
 ```java
 import com.batzirdbuilds.batzirdsGuiAPI.GuiBuilder;
@@ -238,6 +238,8 @@ ItemStack checkerB = ItemFactory.named(Material.WHITE_STAINED_GLASS_PANE, " ");
 
 GuiBuilder cosmetic = new GuiBuilder(27, "Cosmetics")
         .template(GuiTemplate.Preset.FRAME, border)
+        .corners(border)
+        .diagonal(border)
         .checkerTemplate(checkerA, checkerB);
 ```
 
