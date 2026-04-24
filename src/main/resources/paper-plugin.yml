@@ -1,6 +1,0 @@
-name: BatzirdsGuiAPI
-version: '${version}'
-
-main: com.batzirdbuilds.batzirdsGuiAPI.BatzirdsGuiAPI
-api-version: '1.21.11'
-load: POSTWORLD
