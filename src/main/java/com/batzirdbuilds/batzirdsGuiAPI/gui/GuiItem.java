@@ -1,69 +1,43 @@
 package com.batzirdbuilds.batzirdsGuiAPI.gui;
 
-import com.batzirdbuilds.batzirdsGuiAPI.action.ChatAction;
-import com.batzirdbuilds.batzirdsGuiAPI.action.CommandAction;
-import com.batzirdbuilds.batzirdsGuiAPI.action.CompositeAction;
-import com.batzirdbuilds.batzirdsGuiAPI.action.FunctionAction;
-import com.batzirdbuilds.batzirdsGuiAPI.action.GuiAction;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.Objects;
 
-public class GuiItem {
+/**
+ * Immutable slot item plus metadata describing which click behavior it should bind to.
+ */
+public final class GuiItem {
 
-    private final Map<ClickType, GuiAction> clickActions = new EnumMap<>(ClickType.class);
-    private GuiAction defaultAction;
+    private final ItemStack itemStack;
+    private final String actionKey;
+    private final boolean cancelClick;
+    private final boolean closeOnAction;
 
-    public @NotNull GuiItem onLeftClickCommand(@NotNull String command) {
-        return onClick(ClickType.LEFT, CommandAction.server(command));
+    public GuiItem(ItemStack itemStack, String actionKey, boolean cancelClick, boolean closeOnAction) {
+        this.itemStack = Objects.requireNonNull(itemStack, "itemStack").clone();
+        this.actionKey = Objects.requireNonNull(actionKey, "actionKey");
+        this.cancelClick = cancelClick;
+        this.closeOnAction = closeOnAction;
     }
 
-    public @NotNull GuiItem onClickChat(@NotNull String text) {
-        return onClick(new ChatAction(text));
+    public static GuiItem of(ItemStack itemStack, String actionKey) {
+        return new GuiItem(itemStack, actionKey, true, false);
     }
 
-    public @NotNull GuiItem onClick(@NotNull Consumer<ClickContext> consumer) {
-        return onClick(new FunctionAction(consumer));
+    public ItemStack itemStack() {
+        return itemStack.clone();
     }
 
-    public @NotNull GuiItem onClick(@NotNull GuiAction action) {
-        if (defaultAction == null) {
-            defaultAction = action;
-            return this;
-        }
-
-        if (defaultAction instanceof CompositeAction compositeAction) {
-            compositeAction.andThen(action);
-            return this;
-        }
-
-        defaultAction = CompositeAction.of(defaultAction, action);
-        return this;
+    public String actionKey() {
+        return actionKey;
     }
 
-    public @NotNull GuiItem onClick(@NotNull ClickType clickType, @NotNull GuiAction action) {
-        GuiAction existing = clickActions.get(clickType);
-        if (existing == null) {
-            clickActions.put(clickType, action);
-            return this;
-        }
-
-        if (existing instanceof CompositeAction compositeAction) {
-            compositeAction.andThen(action);
-            return this;
-        }
-
-        clickActions.put(clickType, CompositeAction.of(existing, action));
-        return this;
+    public boolean cancelClick() {
+        return cancelClick;
     }
 
-    public void trigger(@NotNull Player player, @NotNull ClickContext context) {
-        Optional.ofNullable(clickActions.get(context.clickType())).ifPresent(action -> action.execute(player, context));
-        Optional.ofNullable(defaultAction).ifPresent(action -> action.execute(player, context));
+    public boolean closeOnAction() {
+        return closeOnAction;
     }
 }
