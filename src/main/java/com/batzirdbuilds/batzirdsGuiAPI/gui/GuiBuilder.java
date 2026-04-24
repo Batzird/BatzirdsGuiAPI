@@ -141,7 +141,9 @@ public final class GuiBuilder {
     public Inventory open(Player player) {
         Objects.requireNonNull(player, "player");
         Inventory inventory = Bukkit.createInventory(null, rows * 9, title);
-        slotItems.forEach(inventory::setItem);
+        HashMap<Integer, ItemStack> slotItemStacks = new HashMap<>();
+        slotItems.forEach((slot, item) -> slotItemStacks.put(slot, item.itemStack()));
+        slotItemStacks.forEach(inventory::setItem);
         player.openInventory(inventory);
         return inventory;
     }
