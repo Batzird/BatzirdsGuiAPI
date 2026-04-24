@@ -6,16 +6,47 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Runtime options controlling how strongly a GUI inventory is protected.
+ * Runtime options controlling click behavior and top-inventory protection.
  */
 public final class GuiOptions {
 
     private final Set<Integer> interactiveSlots;
     private final boolean strictTopInventoryProtection;
+    private final boolean cancelAllClicks;
+    private final boolean allowPlayerInventoryClicks;
+    private final boolean closeOnAction;
+
+    /**
+     * Compatibility constructor used by the fluent GUI builder mutators.
+     */
+    public GuiOptions(
+            final boolean cancelAllClicks,
+            final boolean allowPlayerInventoryClicks,
+            final boolean closeOnAction
+    ) {
+        this(Collections.emptySet(), cancelAllClicks, allowPlayerInventoryClicks, closeOnAction);
+    }
+
+    private GuiOptions(
+            final Set<Integer> interactiveSlots,
+            final boolean cancelAllClicks,
+            final boolean allowPlayerInventoryClicks,
+            final boolean closeOnAction
+    ) {
+        this.interactiveSlots = Collections.unmodifiableSet(new HashSet<>(interactiveSlots));
+        this.cancelAllClicks = cancelAllClicks;
+        this.allowPlayerInventoryClicks = allowPlayerInventoryClicks;
+        this.closeOnAction = closeOnAction;
+        // Keep the guard listener's semantics aligned with click-cancel behavior.
+        this.strictTopInventoryProtection = cancelAllClicks;
+    }
 
     private GuiOptions(final Builder builder) {
-        this.interactiveSlots = Collections.unmodifiableSet(new HashSet<>(builder.interactiveSlots));
-        this.strictTopInventoryProtection = builder.strictTopInventoryProtection;
+        this(builder.interactiveSlots, builder.strictTopInventoryProtection, false, false);
+    }
+
+    public static GuiOptions defaults() {
+        return new GuiOptions(true, false, false);
     }
 
     /**
@@ -30,6 +61,18 @@ public final class GuiOptions {
      */
     public boolean strictTopInventoryProtection() {
         return strictTopInventoryProtection;
+    }
+
+    public boolean cancelAllClicks() {
+        return cancelAllClicks;
+    }
+
+    public boolean allowPlayerInventoryClicks() {
+        return allowPlayerInventoryClicks;
+    }
+
+    public boolean closeOnAction() {
+        return closeOnAction;
     }
 
     public boolean isInteractiveSlot(final int slot) {
@@ -74,7 +117,7 @@ public final class GuiOptions {
         }
 
         public GuiOptions build() {
-            return new GuiOptions(this);
+            return new GuiOptions(interactiveSlots, strictTopInventoryProtection, false, false);
         }
     }
 }
