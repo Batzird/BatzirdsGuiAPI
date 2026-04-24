@@ -52,6 +52,16 @@ public final class GuiBuilder {
         return this;
     }
 
+    public GuiBuilder corners(ItemStack itemStack) {
+        GuiPatterns.corners(inventory, itemStack);
+        return this;
+    }
+
+    public GuiBuilder diagonal(ItemStack itemStack) {
+        GuiPatterns.diagonal(inventory, itemStack);
+        return this;
+    }
+
     public GuiBuilder fillRow(int row, ItemStack itemStack) {
         GuiPatterns.fillRow(inventory, row, itemStack);
         return this;

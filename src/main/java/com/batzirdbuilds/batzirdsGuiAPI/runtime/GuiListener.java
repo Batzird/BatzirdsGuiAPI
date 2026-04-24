@@ -10,30 +10,28 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 
-public class GuiListener implements Listener {
+public final class GuiListener implements Listener {
 
     private final GuiSessionManager sessionManager;
 
-    public GuiListener(GuiSessionManager sessionManager) {
+    public GuiListener(final GuiSessionManager sessionManager) {
         this.sessionManager = sessionManager;
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
+    public void onInventoryClick(final InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) {
             return;
         }
 
-        // resolve session
-        UUID playerId = player.getUniqueId();
-        GuiSession session = sessionManager.resolve(playerId, event.getView().getTopInventory());
+        final UUID playerId = player.getUniqueId();
+        final GuiSession session = sessionManager.resolve(playerId, event.getView().getTopInventory());
         if (session == null) {
             return;
         }
 
-        // validate click target
-        int rawSlot = event.getRawSlot();
-        boolean clickedTopInventory = rawSlot >= 0 && rawSlot < session.inventory().getSize();
+        final int rawSlot = event.getRawSlot();
+        final boolean clickedTopInventory = rawSlot >= 0 && rawSlot < session.inventory().getSize();
         if (!clickedTopInventory) {
             if (session.cancelClicksByDefault()) {
                 event.setCancelled(true);
@@ -41,29 +39,23 @@ public class GuiListener implements Listener {
             return;
         }
 
-        // execute action
         if (session.cancelClicksByDefault()) {
             event.setCancelled(true);
         }
 
-        Consumer<InventoryClickEvent> slotAction = session.slotActions().get(rawSlot);
+        final Consumer<InventoryClickEvent> slotAction = session.slotActions().get(rawSlot);
         if (slotAction != null) {
             slotAction.accept(event);
-        }
-
-        // cleanup
-        if (!event.getWhoClicked().getOpenInventory().getTopInventory().equals(session.inventory())) {
-            sessionManager.removeSession(playerId);
         }
     }
 
     @EventHandler
-    public void onInventoryDrag(InventoryDragEvent event) {
+    public void onInventoryDrag(final InventoryDragEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) {
             return;
         }
 
-        GuiSession session = sessionManager.resolve(player.getUniqueId(), event.getView().getTopInventory());
+        final GuiSession session = sessionManager.resolve(player.getUniqueId(), event.getView().getTopInventory());
         if (session == null) {
             return;
         }
@@ -74,18 +66,16 @@ public class GuiListener implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClose(InventoryCloseEvent event) {
+    public void onInventoryClose(final InventoryCloseEvent event) {
         if (!(event.getPlayer() instanceof Player player)) {
             return;
         }
 
-        // resolve session
-        GuiSession session = sessionManager.resolve(player.getUniqueId(), event.getInventory());
+        final GuiSession session = sessionManager.resolve(player.getUniqueId(), event.getInventory());
         if (session == null) {
             return;
         }
 
-        // cleanup
         sessionManager.removeSession(player.getUniqueId());
         sessionManager.removeSession(event.getInventory());
     }

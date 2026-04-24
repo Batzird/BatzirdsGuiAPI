@@ -17,6 +17,8 @@ public final class GuiTemplate {
         FRAME,
         HEADER_FOOTER,
         SIDE_COLUMNS,
+        CORNERS,
+        DIAGONAL,
         FULL
     }
 
@@ -35,6 +37,8 @@ public final class GuiTemplate {
                 GuiPatterns.fillColumn(inventory, 0, itemStack);
                 GuiPatterns.fillColumn(inventory, 8, itemStack);
             }
+            case CORNERS -> GuiPatterns.corners(inventory, itemStack);
+            case DIAGONAL -> GuiPatterns.diagonal(inventory, itemStack);
             case FULL -> GuiPatterns.fill(inventory, itemStack);
         }
     }

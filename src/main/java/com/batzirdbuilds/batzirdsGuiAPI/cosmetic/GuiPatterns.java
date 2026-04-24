@@ -99,6 +99,40 @@ public final class GuiPatterns {
         }
     }
 
+
+    /**
+     * Strategy: selects the four corner slots in the inventory.
+     */
+    public static void corners(Inventory inventory, ItemStack itemStack) {
+        validate(inventory, itemStack);
+
+        int rows = rowCount(inventory);
+        if (rows == 0) {
+            return;
+        }
+
+        int lastRowStart = (rows - 1) * ROW_WIDTH;
+        inventory.setItem(0, itemStack.clone());
+        inventory.setItem(ROW_WIDTH - 1, itemStack.clone());
+        inventory.setItem(lastRowStart, itemStack.clone());
+        inventory.setItem(lastRowStart + ROW_WIDTH - 1, itemStack.clone());
+    }
+
+    /**
+     * Strategy: selects a left-to-right diagonal across inventory rows.
+     * <p>
+     * For each row, places at column {@code row % 9}.
+     */
+    public static void diagonal(Inventory inventory, ItemStack itemStack) {
+        validate(inventory, itemStack);
+
+        int rows = rowCount(inventory);
+        for (int row = 0; row < rows; row++) {
+            int column = row % ROW_WIDTH;
+            inventory.setItem(row * ROW_WIDTH + column, itemStack.clone());
+        }
+    }
+
     private static void validate(Inventory inventory, ItemStack itemStack) {
         Objects.requireNonNull(inventory, "inventory");
         Objects.requireNonNull(itemStack, "itemStack");

@@ -8,38 +8,43 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
-public class GuiSessionManager {
+public final class GuiSessionManager {
 
     private final Map<UUID, GuiSession> sessionsByPlayer = new ConcurrentHashMap<>();
     private final Map<Inventory, GuiSession> sessionsByInventory = new ConcurrentHashMap<>();
 
-    public void trackSession(UUID playerId, Inventory inventory, Map<Integer, Consumer<InventoryClickEvent>> slotActions,
-                             boolean cancelClicksByDefault) {
-        GuiSession session = new GuiSession(playerId, inventory, new ConcurrentHashMap<>(slotActions), cancelClicksByDefault);
+    public void trackSession(
+            final UUID playerId,
+            final Inventory inventory,
+            final Map<Integer, Consumer<InventoryClickEvent>> slotActions,
+            final boolean cancelClicksByDefault
+    ) {
+        final GuiSession session = new GuiSession(
+                playerId,
+                inventory,
+                Map.copyOf(slotActions),
+                cancelClicksByDefault
+        );
         sessionsByPlayer.put(playerId, session);
         sessionsByInventory.put(inventory, session);
     }
 
-    public void trackSession(Player player, Inventory inventory, Map<Integer, Consumer<InventoryClickEvent>> slotActions,
-                             boolean cancelClicksByDefault) {
+    public void trackSession(
+            final Player player,
+            final Inventory inventory,
+            final Map<Integer, Consumer<InventoryClickEvent>> slotActions,
+            final boolean cancelClicksByDefault
+    ) {
         trackSession(player.getUniqueId(), inventory, slotActions, cancelClicksByDefault);
     }
 
-    public GuiSession findByPlayer(UUID playerId) {
-        return sessionsByPlayer.get(playerId);
-    }
-
-    public GuiSession findByInventory(Inventory inventory) {
-        return sessionsByInventory.get(inventory);
-    }
-
-    public GuiSession resolve(UUID playerId, Inventory inventory) {
-        GuiSession byInventory = sessionsByInventory.get(inventory);
+    public GuiSession resolve(final UUID playerId, final Inventory inventory) {
+        final GuiSession byInventory = sessionsByInventory.get(inventory);
         if (byInventory != null && byInventory.playerId().equals(playerId)) {
             return byInventory;
         }
 
-        GuiSession byPlayer = sessionsByPlayer.get(playerId);
+        final GuiSession byPlayer = sessionsByPlayer.get(playerId);
         if (byPlayer != null && byPlayer.inventory().equals(inventory)) {
             return byPlayer;
         }
@@ -47,26 +52,34 @@ public class GuiSessionManager {
         return null;
     }
 
-    public void removeSession(UUID playerId) {
-        GuiSession removed = sessionsByPlayer.remove(playerId);
+    public void removeSession(final UUID playerId) {
+        final GuiSession removed = sessionsByPlayer.remove(playerId);
         if (removed != null) {
             sessionsByInventory.remove(removed.inventory(), removed);
         }
     }
 
-    public void removeSession(Inventory inventory) {
-        GuiSession removed = sessionsByInventory.remove(inventory);
+    public void removeSession(final Inventory inventory) {
+        final GuiSession removed = sessionsByInventory.remove(inventory);
         if (removed != null) {
             sessionsByPlayer.remove(removed.playerId(), removed);
         }
+    }
+
+    public void clear() {
+        sessionsByPlayer.clear();
+        sessionsByInventory.clear();
     }
 
     public int activeSessions() {
         return sessionsByPlayer.size();
     }
 
-    public record GuiSession(UUID playerId, Inventory inventory,
-                             Map<Integer, Consumer<InventoryClickEvent>> slotActions,
-                             boolean cancelClicksByDefault) {
+    public record GuiSession(
+            UUID playerId,
+            Inventory inventory,
+            Map<Integer, Consumer<InventoryClickEvent>> slotActions,
+            boolean cancelClicksByDefault
+    ) {
     }
 }
