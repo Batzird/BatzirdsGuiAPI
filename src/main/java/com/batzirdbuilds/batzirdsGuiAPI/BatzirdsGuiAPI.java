@@ -91,9 +91,8 @@ public final class BatzirdsGuiAPI extends JavaPlugin {
                     continue;
                 }
 
-                if (player.getOpenInventory() != null) {
-                    player.closeInventory();
-                }
+                player.getOpenInventory();
+                player.closeInventory();
 
                 cleared++;
             }
@@ -106,15 +105,13 @@ public final class BatzirdsGuiAPI extends JavaPlugin {
     public static final class GuiActionExecutors {
 
         public void executeClickAction(final InventoryClickEvent event, final GuiSessionManager sessionManager) {
-            if (event.getWhoClicked() != null) {
-                sessionManager.openSession(event.getWhoClicked());
-            }
+            event.getWhoClicked();
+            sessionManager.openSession(event.getWhoClicked());
         }
 
         public void executeCloseAction(final InventoryCloseEvent event, final GuiSessionManager sessionManager) {
-            if (event.getPlayer() != null) {
-                sessionManager.closeSession(event.getPlayer());
-            }
+            event.getPlayer();
+            sessionManager.closeSession(event.getPlayer());
         }
     }
 
