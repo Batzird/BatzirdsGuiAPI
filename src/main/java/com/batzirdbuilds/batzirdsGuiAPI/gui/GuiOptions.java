@@ -24,25 +24,29 @@ public final class GuiOptions {
             final boolean allowPlayerInventoryClicks,
             final boolean closeOnAction
     ) {
-        this(Collections.emptySet(), cancelAllClicks, allowPlayerInventoryClicks, closeOnAction);
+        this(Collections.emptySet(), cancelAllClicks, allowPlayerInventoryClicks, closeOnAction, cancelAllClicks);
     }
 
     private GuiOptions(
             final Set<Integer> interactiveSlots,
             final boolean cancelAllClicks,
             final boolean allowPlayerInventoryClicks,
-            final boolean closeOnAction
+            final boolean closeOnAction,
+            final boolean strictTopInventoryProtection
     ) {
         this.interactiveSlots = Collections.unmodifiableSet(new HashSet<>(interactiveSlots));
         this.cancelAllClicks = cancelAllClicks;
         this.allowPlayerInventoryClicks = allowPlayerInventoryClicks;
         this.closeOnAction = closeOnAction;
-        // Keep the guard listener's semantics aligned with click-cancel behavior.
-        this.strictTopInventoryProtection = cancelAllClicks;
+        this.strictTopInventoryProtection = strictTopInventoryProtection;
     }
 
-    private GuiOptions(final Builder builder) {
-        this(builder.interactiveSlots, builder.strictTopInventoryProtection, false, false);
+    public GuiOptions withFlags(
+            final boolean cancelAllClicks,
+            final boolean allowPlayerInventoryClicks,
+            final boolean closeOnAction
+    ) {
+        return new GuiOptions(interactiveSlots, cancelAllClicks, allowPlayerInventoryClicks, closeOnAction, cancelAllClicks);
     }
 
     public static GuiOptions defaults() {
@@ -86,6 +90,8 @@ public final class GuiOptions {
     public static final class Builder {
         private final Set<Integer> interactiveSlots = new HashSet<>();
         private boolean strictTopInventoryProtection = true;
+        private boolean allowPlayerInventoryClicks;
+        private boolean closeOnAction;
 
         private Builder() {
         }
@@ -116,8 +122,24 @@ public final class GuiOptions {
             return this;
         }
 
+        public Builder allowPlayerInventoryClicks(final boolean allowPlayerInventoryClicks) {
+            this.allowPlayerInventoryClicks = allowPlayerInventoryClicks;
+            return this;
+        }
+
+        public Builder closeOnAction(final boolean closeOnAction) {
+            this.closeOnAction = closeOnAction;
+            return this;
+        }
+
         public GuiOptions build() {
-            return new GuiOptions(interactiveSlots, strictTopInventoryProtection, false, false);
+            return new GuiOptions(
+                    interactiveSlots,
+                    strictTopInventoryProtection,
+                    allowPlayerInventoryClicks,
+                    closeOnAction,
+                    strictTopInventoryProtection
+            );
         }
     }
 }
