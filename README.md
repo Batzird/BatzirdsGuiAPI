@@ -89,6 +89,51 @@ public final class Menus {
 
 ---
 
+
+## Class-based GUI pattern (`new ShopGUI(args)`)
+
+If you prefer object-oriented menus, use the built-in `GUI` + `BaseGUI` types and create one class per menu.
+
+```java
+import com.batzirdbuilds.batzirdsGuiAPI.gui.BaseGUI;
+import com.batzirdbuilds.batzirdsGuiAPI.gui.GuiBuilder;
+import com.batzirdbuilds.batzirdsGuiAPI.gui.GuiItem;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+public final class ShopGUI extends BaseGUI {
+
+    private final ShopService shopService;
+    private final int page;
+
+    public ShopGUI(ShopService shopService, int page) {
+        this.shopService = shopService;
+        this.page = page;
+    }
+
+    @Override
+    protected GuiBuilder createBuilder(Player viewer) {
+        return GuiBuilder.create("shop:" + page)
+                .title("Shop - Page " + page)
+                .rows(6)
+                .cancelAllClicks(true)
+                .allowPlayerInventoryClicks(false)
+                .setItem(13, GuiItem.of(new ItemStack(Material.EMERALD), "shop:buy_emerald"))
+                .onClick(13, e -> shopService.buyEmerald((Player) e.getWhoClicked()));
+    }
+}
+```
+
+Usage:
+
+```java
+GUI shopGUI = new ShopGUI(shopService, 1);
+shopGUI.open(player);
+```
+
+---
+
 ## Examples
 
 ## Example 1: Minimal GUI
