@@ -1,15 +1,20 @@
 package com.batzirdbuilds.batzirdsGuiAPI;
 
 import org.bukkit.Server;
-import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.conversations.Conversation;
+import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.permissions.PermissibleBase;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Set;
+import java.util.UUID;
 
 public class SilentConsoleSender implements ConsoleCommandSender {
 
@@ -24,6 +29,16 @@ public class SilentConsoleSender implements ConsoleCommandSender {
     // --- Suppress all output ---
     @Override public void sendMessage(String message) {}
     @Override public void sendMessage(String... messages) {}
+
+    @Override
+    public void sendMessage(@Nullable UUID sender, @NotNull String message) {
+
+    }
+
+    @Override
+    public void sendMessage(@Nullable UUID sender, @NonNull @NotNull String... messages) {
+
+    }
 
     // --- Identity ---
     @Override public String getName() { return "SilentConsole"; }
@@ -49,4 +64,39 @@ public class SilentConsoleSender implements ConsoleCommandSender {
     // --- Spigot ---
     @Override public Spigot spigot() { return delegate.spigot(); }
     @Override public Component name() {return Component.text("SilentConsole");}
+
+    @Override
+    public boolean isConversing() {
+        return false;
+    }
+
+    @Override
+    public void acceptConversationInput(@NotNull String input) {
+
+    }
+
+    @Override
+    public boolean beginConversation(@NotNull Conversation conversation) {
+        return false;
+    }
+
+    @Override
+    public void abandonConversation(@NotNull Conversation conversation) {
+
+    }
+
+    @Override
+    public void abandonConversation(@NotNull Conversation conversation, @NotNull ConversationAbandonedEvent details) {
+
+    }
+
+    @Override
+    public void sendRawMessage(@NotNull String message) {
+
+    }
+
+    @Override
+    public void sendRawMessage(@Nullable UUID sender, @NotNull String message) {
+
+    }
 }
