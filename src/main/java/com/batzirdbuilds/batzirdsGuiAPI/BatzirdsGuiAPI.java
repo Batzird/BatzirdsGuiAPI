@@ -3,6 +3,9 @@ package com.batzirdbuilds.batzirdsGuiAPI;
 import com.batzirdbuilds.batzirdsGuiAPI.runtime.GuiListener;
 import com.batzirdbuilds.batzirdsGuiAPI.runtime.GuiSessionManager;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import com.batzirdbuilds.batzirdsGuiApi.SilentConsoleSender;
+import org.bukkit.event.player.PlayerEditBookEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
@@ -11,7 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 /**
  * Plugin bootstrap for the GUI API runtime services.
  */
-public final class BatzirdsGuiAPI extends JavaPlugin, Listener {
+public final class BatzirdsGuiAPI extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
