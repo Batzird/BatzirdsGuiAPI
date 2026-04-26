@@ -1,3 +1,5 @@
+package com.batzirdbuilds.batzirdsGuiAPI;
+
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
