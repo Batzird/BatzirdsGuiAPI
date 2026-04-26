@@ -7,6 +7,7 @@ import org.bukkit.permissions.PermissibleBase;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
+import net.kyori.adventure.text.Component;
 
 import java.util.Set;
 
@@ -47,4 +48,5 @@ public class SilentConsoleSender implements ConsoleCommandSender {
 
     // --- Spigot ---
     @Override public Spigot spigot() { return delegate.spigot(); }
+    @Override public Component name() {return Component.text("SilentConsole");}
 }
