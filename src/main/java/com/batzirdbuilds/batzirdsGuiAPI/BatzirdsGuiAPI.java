@@ -36,6 +36,8 @@ public final class BatzirdsGuiAPI implements Listener {
 
                     if (command.startsWith("/")) {
                         command = command.substring(1);
+                    } else {
+                        command = "/"+command.substring(1);
                     }
 
                     runSilentCommand(command);
