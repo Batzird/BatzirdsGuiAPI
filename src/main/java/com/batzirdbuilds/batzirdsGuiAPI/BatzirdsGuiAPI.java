@@ -2,7 +2,6 @@ package com.batzirdbuilds.batzirdsGuiAPI;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import com.batzirdbuilds.batzirdsGuiAPI.SilentConsoleSender;
 import org.bukkit.event.player.PlayerEditBookEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
