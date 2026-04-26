@@ -11,18 +11,6 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public final class BatzirdsGuiAPI extends JavaPlugin {
 
-    private static volatile BatzirdsGuiAPI instance;
-
-    private GuiSessionManager sessionManager;
-
-    public static BatzirdsGuiAPI getGuiApi() {
-        return instance;
-    }
-
-    public GuiSessionManager getSessionManager() {
-        return sessionManager;
-    }
-
     @Override
     public void onEnable() {
         getLogger().info("BatzirdsGuiAPI is not meant to be run as a plugin. Please shade this API into your plugins as a dependency!");
