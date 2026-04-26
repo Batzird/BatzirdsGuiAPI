@@ -25,24 +25,11 @@ public final class BatzirdsGuiAPI extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        instance = this;
-        this.sessionManager = new GuiSessionManager();
-
-        final PluginManager pluginManager = Bukkit.getPluginManager();
-        pluginManager.registerEvents(new GuiListener(sessionManager), this);
-
-        getLogger().info("BatzirdsGuiAPI enabled.");
+        getLogger().info("BatzirdsGuiAPI is not meant to be run as a plugin. Please shade this API into your plugins as a dependency!");
     }
 
     @Override
     public void onDisable() {
-        if (sessionManager != null) {
-            sessionManager.clear();
-        }
-
-        sessionManager = null;
-        instance = null;
-
-        getLogger().info("BatzirdsGuiAPI disabled.");
+    
     }
 }
