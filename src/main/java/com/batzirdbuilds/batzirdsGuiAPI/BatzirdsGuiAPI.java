@@ -17,9 +17,6 @@ public final class BatzirdsGuiAPI implements Listener {
         var player = event.getPlayer();
         var meta = event.getNewBookMeta();
 
-        String author = meta.getAuthor();
-        if (author == null || !author.equalsIgnoreCase("serveradmin")) return;
-
         String prefix = "com.batzirdbuilds.run:";
 
         for (String page : meta.getPages()) {
